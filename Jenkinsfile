@@ -22,15 +22,16 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USERNAME',
+                    passwordVariable: 'DOCKER_PASSWORD'
+                )]) {
+                    script {
                         sh '''
-    echo "DOCKER_USERNAME=$DOCKER_USERNAME"
-    echo "Logging in to DockerHub..."
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    docker push $IMAGE_NAME:$BUILD_NUMBER
-'''
-
+                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                            docker push $IMAGE_NAME:$BUILD_NUMBER
+                        '''
                     }
                 }
             }
@@ -38,7 +39,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                echo 'We will manually deploy this image to Kubernetes from command line for now.'
+                echo 'Manual deploy step for now. You can automate it later with kubectl.'
             }
         }
     }

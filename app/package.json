@@ -1,0 +1,12 @@
+{
+  "name": "nodejs-cicd-app",
+  "version": "1.0.0",
+  "description": "A sample Node.js app for CI/CD with Jenkins",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

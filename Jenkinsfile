@@ -23,9 +23,9 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh '''
-                            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                             docker push $IMAGE_NAME:$BUILD_NUMBER
                         '''
                     }
@@ -35,21 +35,8 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    echo "Deploying version $BUILD_NUMBER of $IMAGE_NAME to Kubernetes cluster"
-                    // For now, manual deployment or shell script can go here
-                    // You can replace this with kubectl apply -f deployment.yaml in future
-                }
+                echo 'We will manually deploy this image to Kubernetes from command line for now.'
             }
-        }
-    }
-
-    post {
-        success {
-            echo "Pipeline completed successfully! Docker Image: $IMAGE_NAME:$BUILD_NUMBER"
-        }
-        failure {
-            echo "Pipeline failed. Check logs for details."
         }
     }
 }

@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "saahilops/nodejs-cicd-jenkins-k8s"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -15,22 +16,18 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+                    sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
                 }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USERNAME',
-                    passwordVariable: 'DOCKER_PASSWORD'
-                )]) {
-                    script {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh '''
-                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                            docker push $IMAGE_NAME:$BUILD_NUMBER
+                            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                            docker push $IMAGE_NAME:$IMAGE_TAG
                         '''
                     }
                 }
@@ -39,8 +36,14 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                echo 'Manual deploy step for now. You can automate it later with kubectl.'
+                echo 'Manual deployment for now. Will integrate with kubectl apply in future.'
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }

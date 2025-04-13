@@ -42,6 +42,7 @@ pipeline {
                         kubectl apply -f k8s/deployment-node.yaml
                         kubectl apply -f k8s/service-node.yaml
                     """
+                }
             }
         }
     }

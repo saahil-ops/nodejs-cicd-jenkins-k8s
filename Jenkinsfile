@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        sed 's|IMAGE_TAG|$IMAGE_TAG|g' k8s/deployment-template.yaml > k8s/deployment-node.yaml
+                        sed 's|IMAGE_TAG|$IMAGE_TAG|g' k8s/deploy-temp.yaml > k8s/deployment-node.yaml
                         kubectl apply -f k8s/deployment-node.yaml
                         kubectl apply -f k8s/service-node.yaml
                     """
